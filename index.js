@@ -16,9 +16,9 @@ var middleware = function (req, res, next) {
             throw new Error('Action must be a string or array');
         var item = req[type][key];
         if (typeof item === 'undefined')
-            return;
+            throw new Error('Invalid param');
         if (!Array.isArray(action))
-            action = [].push(action);
+            action = [action];
         action.every(function (a) {
             var e = run(item, a, errorMessage || _options.errorMessage || _msg);
             if (e == null)
