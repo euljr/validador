@@ -1,0 +1,27 @@
+{
+  "name": "validador",
+  "version": "0.0.1",
+  "description": "Simple express validator middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/euljr/validador.git"
+  },
+  "keywords": [
+    "express",
+    "node-validator",
+    "validator"
+  ],
+  "author": "Euler Menezes Junior <euler@bsd.com.br> (http://eulermenezes.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/euljr/validador/issues"
+  },
+  "homepage": "https://github.com/euljr/validador#readme",
+  "dependencies": {
+    "validator": "^5.4.0"
+  }
+}
