@@ -1,6 +1,6 @@
 {
   "name": "validador",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simple express validator middleware",
   "main": "index.js",
   "scripts": {
