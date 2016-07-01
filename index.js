@@ -23,7 +23,7 @@ var middleware = function (req, res, next) {
             var e = run(item, a, errorMessage || _options.errorMessage || _msg);
             if (e == null)
                 return true;
-            if(req.validationErrors == null)
+            if (req.validationErrors == null)
                 req.validationErrors = {};
             req.validationErrors[key] = e;
             return false;
@@ -36,12 +36,10 @@ var run = function (key, action, errorMessage) {
     var msg = action.split('|')[1] || errorMessage;
     var func = action.split('|')[0].split(':')[0];
     var param = action.split('|')[0].split(':')[1] || undefined;
-    console.log('tentando rodar: ' + func)
     if (v[func] != null) {
         if (_sanitizers.indexOf(func) !== -1)
             key = v[func](key, param);
         else {
-            console.log(func);
             if (!v[func](key, param))
                 return msg;
         }
@@ -50,6 +48,8 @@ var run = function (key, action, errorMessage) {
             return msg;
     } else if (_options.customSanitizers[func])
         key = _options.customSanitizers[func](key, param);
+    else
+        throw new Error('Validator or sanitizer ' + func + ' not found.');
     return null;
 }
 
