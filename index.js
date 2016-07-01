@@ -49,7 +49,7 @@ var run = function (key, action, errorMessage) {
         if (!_options.customValidators[func](key, param))
             return msg;
     } else if (_options.customSanitizers[func])
-        _options.customSanitizers[func](key, param);
+        key = _options.customSanitizers[func](key, param);
     return null;
 }
 
