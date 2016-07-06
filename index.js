@@ -15,12 +15,11 @@ var middleware = function (req, res, next) {
         if (typeof action !== 'string' && typeof action !== 'object')
             throw new Error('Action must be a string or array');
         var item = req[type][key];
-        if (typeof item === 'undefined')
-            throw new Error('Invalid param');
+        var isUndefined = typeof item === 'undefined';
         if (!Array.isArray(action))
             action = [action];
         action.every(function (a) {
-            var e = run(item, a, errorMessage || _options.errorMessage || _msg);
+            var e = run(item, a, errorMessage || _options.errorMessage || _msg, isUndefined);
             if (e == null)
                 return true;
             if (req.validationErrors == null)
@@ -32,10 +31,14 @@ var middleware = function (req, res, next) {
     next();
 }
 
-var run = function (key, action, errorMessage) {
+var run = function (key, action, errorMessage, isUndefined) {
     var msg = action.split('|')[1] || errorMessage;
     var func = action.split('|')[0].split(':')[0];
     var param = action.split('|')[0].split(':')[1] || undefined;
+    
+    if(isUndefined)
+        return func == 'required' ? msg : null;
+
     if (v[func] != null) {
         if (_sanitizers.indexOf(func) !== -1)
             key = v[func](key, param);
