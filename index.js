@@ -46,8 +46,8 @@ var run = function (key, action, errorMessage, isUndefined) {
         param = action.split('|')[0].split(':')[1] || undefined;
     }
 
-    if(isUndefined)
-        return func == 'required' ? msg : null;
+    if(func == 'required')
+        return (isUndefined) ? msg : null;
 
     if (v[func] != null) {
         if (_sanitizers.indexOf(func) !== -1)
