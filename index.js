@@ -32,10 +32,20 @@ var middleware = function (req, res, next) {
 }
 
 var run = function (key, action, errorMessage, isUndefined) {
-    var msg = action.split('|')[1] || errorMessage;
-    var func = action.split('|')[0].split(':')[0];
-    var param = action.split('|')[0].split(':')[1] || undefined;
-    
+    var msg, func, param;
+    if(typeof action === 'object') {
+        if(!action.hasOwnProperty('func') || typeof func !== 'string')
+            throw new Error('Wrong validation.');
+        else
+            var func = action.func;
+        param = action.param || undefined;
+        msg = action.msg || errorMessage; 
+    } else {
+        msg = action.split('|')[1] || errorMessage;
+        func = action.split('|')[0].split(':')[0];
+        param = action.split('|')[0].split(':')[1] || undefined;
+    }
+
     if(isUndefined)
         return func == 'required' ? msg : null;
 
