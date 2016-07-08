@@ -1,7 +1,8 @@
 var v = require('validator');
 var _sanitizers = ['blacklist', 'escape', 'unescape', 'ltrim',
     'normalizeEmail', 'rtrim', 'stripLow', 'toBoolean',
-    'toDate', 'toFloat', 'toInt', 'trim', 'whitelist'];
+    'toDate', 'toFloat', 'toInt', 'trim', 'whitelist'
+];
 var _msg = 'Validation error';
 var _options = {};
 
@@ -33,21 +34,22 @@ var middleware = function (req, res, next) {
 
 var run = function (key, action, errorMessage, isUndefined) {
     var msg, func, param;
-    if(typeof action === 'object') {
-        if(!action.hasOwnProperty('func') || typeof func !== 'string')
+    if (typeof action === 'object') {
+        if (!action.hasOwnProperty('func') || typeof action.func !== 'string')
             throw new Error('Wrong validation.');
         else
-            var func = action.func;
+            func = action.func;
         param = action.param || undefined;
-        msg = action.msg || errorMessage; 
+        msg = action.msg || errorMessage;
     } else {
         msg = action.split('|')[1] || errorMessage;
         func = action.split('|')[0].split(':')[0];
         param = action.split('|')[0].split(':')[1] || undefined;
     }
-
-    if(func == 'required')
-        return (isUndefined) ? msg : null;
+    if (func == 'required')
+        return (isUndefined || v['isNull'](key)) ? msg : null;
+    if (isUndefined)
+        return null;
 
     if (v[func] != null) {
         if (_sanitizers.indexOf(func) !== -1)
