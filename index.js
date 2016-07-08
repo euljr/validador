@@ -1,13 +1,14 @@
 var v = require('validator');
 var _sanitizers = ['blacklist', 'escape', 'unescape', 'ltrim',
     'normalizeEmail', 'rtrim', 'stripLow', 'toBoolean',
-    'toDate', 'toFloat', 'toInt', 'trim', 'whitelist'];
+    'toDate', 'toFloat', 'toInt', 'trim', 'whitelist'
+];
 var _msg = 'Validation error';
 var _options = {};
 
-var middleware = function (req, res, next) {
+var middleware = function(req, res, next) {
     req.validationErrors = null;
-    req.validador = function (key, type, action, errorMessage) {
+    req.validador = function(key, type, action, errorMessage) {
         if (key == null)
             throw new Error('Key cannot be empty');
         if (['body', 'query', 'params'].indexOf(type) === -1)
@@ -18,7 +19,7 @@ var middleware = function (req, res, next) {
         var isUndefined = typeof item === 'undefined';
         if (!Array.isArray(action))
             action = [action];
-        action.every(function (a) {
+        action.every(function(a) {
             var e = run(item, a, errorMessage || _options.errorMessage || _msg, isUndefined);
             if (e == null)
                 return true;
@@ -31,23 +32,22 @@ var middleware = function (req, res, next) {
     next();
 }
 
-var run = function (key, action, errorMessage, isUndefined) {
+var run = function(key, action, errorMessage, isUndefined) {
     var msg, func, param;
-    if(typeof action === 'object') {
-        if(!action.hasOwnProperty('func') || typeof func !== 'string')
+    if (typeof action === 'object') {
+        if (!action.hasOwnProperty('func') || typeof action.func !== 'string')
             throw new Error('Wrong validation.');
         else
-            var func = action.func;
+            func = action.func;
         param = action.param || undefined;
-        msg = action.msg || errorMessage; 
+        msg = action.msg || errorMessage;
     } else {
         msg = action.split('|')[1] || errorMessage;
         func = action.split('|')[0].split(':')[0];
         param = action.split('|')[0].split(':')[1] || undefined;
     }
-
-    if(func == 'required')
-        return (isUndefined) ? msg : null;
+    if (func == 'required')
+        return (isUndefined || v['isNull'](key)) ? msg : null;
 
     if (v[func] != null) {
         if (_sanitizers.indexOf(func) !== -1)
@@ -66,7 +66,7 @@ var run = function (key, action, errorMessage, isUndefined) {
     return null;
 }
 
-var validador = function (options) {
+var validador = function(options) {
     if (options != null)
         _options = options;
     if (!_options.hasOwnProperty('customValidators'))
